@@ -2,7 +2,7 @@ import numpy as np
 from scipy.special import expit
 from scipy.optimize import fmin_powell
 from dataclasses import dataclass
-from methods import gen_corr_backexchange, gen_backexchange_correction_from_backexchange_array, gen_temp_rates, \
+from hxrate.methods import gen_corr_backexchange, gen_backexchange_correction_from_backexchange_array, gen_temp_rates, \
     isotope_dist_from_PoiBin, compute_rmse_exp_thr_iso_dist
 
 

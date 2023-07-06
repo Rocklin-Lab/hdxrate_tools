@@ -5,8 +5,8 @@ from sklearn.neighbors import KernelDensity
 from scipy import stats
 from scipy.optimize import minimize
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
-from methods import calculate_intrinsic_exchange_rates
-from hxdata import write_pickle_object
+from hxrate.methods import calculate_intrinsic_exchange_rates
+from hxrate.hxdata import write_pickle_object
 import matplotlib.pyplot as plt
 
 

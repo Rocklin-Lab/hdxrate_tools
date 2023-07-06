@@ -16,9 +16,9 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from itertools import cycle
 import time
-from backexchange import calc_back_exchange
-from methods import gen_backexchange_correction_from_backexchange_array, gen_corr_backexchange
-from hxdata import write_pickle_object
+from hxrate.backexchange import calc_back_exchange
+from hxrate.methods import gen_backexchange_correction_from_backexchange_array, gen_corr_backexchange
+from hxrate.hxdata import write_pickle_object
 
 # global variables
 r_constant = 0.0019872036

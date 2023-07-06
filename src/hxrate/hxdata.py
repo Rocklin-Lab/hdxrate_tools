@@ -4,7 +4,7 @@ import pickle
 import os
 
 
-def load_data_from_hdx_ms_dist_(fpath):
+def load_data_from_hdx_ms_dist(fpath):
     """
     get hdx mass distribution data
     :param fpath: input .csv path for distribution
