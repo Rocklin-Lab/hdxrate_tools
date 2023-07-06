@@ -11,7 +11,7 @@ This package contains modules for hydrogen deuterium exchange (hdx) mass spectro
 For usage, please refer to the following repository:
 https://github.com/sugyandixit/hxrate_pipeline
 
-Under scripts/hxrate/ there are python scripts that uses HXRATE package for rate fitting and opening free energy calculations
+Under scripts/hxrate/ there are python scripts that use HXRATE package for rate fitting and opening free energy calculations
 
 You could also use hxrate_pipeline repository for distributed computing in High Performance Computing clusters
 (Please refer to README in hxrate_pipeline repository)

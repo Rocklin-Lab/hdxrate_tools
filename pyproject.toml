@@ -1,6 +1,6 @@
 [project]
 name = "hxrate"
-version = "0.0.7"
+version = "1.0.1"
 
 authors = [
   { name="SD", email="suggie@northwestern.edu" },
