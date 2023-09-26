@@ -1814,7 +1814,8 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
                                 fn=dist.Normal(loc=rate_center, scale=rate_sigma))
 
     # Generate merge priors
-    log_merge_prior_sigma = 1.0
+    # log_merge_prior_sigma = 1.0
+    log_merge_prior_sigma = 0.1
     log_merge_prior_center = 3.0
 
     with numpyro.plate(name='merge_facs', size=num_merge_facs):
