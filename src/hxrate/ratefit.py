@@ -1741,7 +1741,10 @@ def rate_fit_model_norm_priors(num_rates,
     :return: numpyro sample object
     """
 
-    rate_center = np.linspace(start=-15, stop=5, num=num_rates)
+    # edits from allan (10/29/23)
+    # rate_center = np.linspace(start=-15, stop=5, num=num_rates)
+    slow_rate = numpyro.sample(name='slow_rate', fn=numpyro.distributions.TruncatedNormal(loc=-7, scale=5, low=-15, high=0))
+    rate_center = jnp.linspace(start=slow_rate, stop=5, num=num_rates)
     rate_sigma = 2.5
     with numpyro.plate(name='rates', size=num_rates):
         rates_ = numpyro.sample(name='rate',
@@ -1759,8 +1762,11 @@ def rate_fit_model_norm_priors(num_rates,
     flat_thr_dist = jnp.concatenate(thr_dists)
     flat_thr_dist_non_zero = flat_thr_dist[nonzero_indices]
 
-    sigma = numpyro.sample(name='sigma',
-                           fn=numpyro.distributions.Normal(loc=0.5, scale=0.5))
+    # Edit 10/29/23
+    # sigma = numpyro.sample(name='sigma',
+    #                        fn=numpyro.distributions.Normal(loc=0.5, scale=0.5))
+
+    sigma=numpyro.sample("sigma", dist.Exponential(1))
 
     with numpyro.plate(name='bins', size=len(flat_thr_dist_non_zero)):
         return numpyro.sample(name='bin_preds',
@@ -1807,7 +1813,10 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
     :return: numpyro sample object
     """
 
-    rate_center = jnp.linspace(start=-15, stop=5, num=num_rates)
+    # edits from allan (10/29/23)
+    # rate_center = jnp.linspace(start=-15, stop=5, num=num_rates)
+    slow_rate = numpyro.sample(name='slow_rate', fn=numpyro.distributions.TruncatedNormal(loc=-7, scale=5, low=-15, high=0))
+    rate_center = jnp.linspace(start=slow_rate, stop=5, num=num_rates)
     rate_sigma = 2.5
     with numpyro.plate(name='rates', size=num_rates):
         rates_ = numpyro.sample(name='rate',
@@ -1816,7 +1825,7 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
     # Generate merge priors
     # log_merge_prior_sigma = 1.0
     # log_merge_prior_sigma = 0.1
-    log_merge_prior_sigma = 0.5
+    log_merge_prior_sigma = 0.05
     log_merge_prior_center = 3.0
 
     with numpyro.plate(name='merge_facs', size=num_merge_facs):
@@ -1840,8 +1849,11 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
     flat_thr_dist = jnp.concatenate(thr_dists)
     flat_thr_dist_non_zero = flat_thr_dist[nonzero_indices]
 
-    sigma = numpyro.sample(name='sigma',
-                           fn=dist.Normal(loc=0.5, scale=0.5))
+    # Edit 10/29/23
+    # sigma = numpyro.sample(name='sigma',
+    #                        fn=dist.Normal(loc=0.5, scale=0.5))
+    
+    sigma=numpyro.sample("sigma", dist.Exponential(1))
 
     with numpyro.plate(name='bins', size=len(flat_thr_dist_non_zero)):
         return numpyro.sample(name='bin_preds',
