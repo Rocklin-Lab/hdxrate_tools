@@ -1743,7 +1743,7 @@ def rate_fit_model_norm_priors(num_rates,
 
     # edits from allan (10/29/23)
     # rate_center = np.linspace(start=-15, stop=5, num=num_rates)
-    slow_rate = numpyro.sample(name='slow_rate', fn=numpyro.distributions.TruncatedNormal(loc=-7, scale=5, low=-15, high=0))
+    slow_rate = numpyro.sample(name='slow_rate', fn=dist.TruncatedNormal(loc=-7, scale=5, low=-15, high=0))
     rate_center = jnp.linspace(start=slow_rate, stop=5, num=num_rates)
     rate_sigma = 2.5
     with numpyro.plate(name='rates', size=num_rates):
@@ -1815,7 +1815,7 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
 
     # edits from allan (10/29/23)
     # rate_center = jnp.linspace(start=-15, stop=5, num=num_rates)
-    slow_rate = numpyro.sample(name='slow_rate', fn=numpyro.distributions.TruncatedNormal(loc=-7, scale=5, low=-15, high=0))
+    slow_rate = numpyro.sample(name='slow_rate', fn=dist.TruncatedNormal(loc=-7, scale=5, low=-15, high=0))
     rate_center = jnp.linspace(start=slow_rate, stop=5, num=num_rates)
     rate_sigma = 2.5
     with numpyro.plate(name='rates', size=num_rates):
