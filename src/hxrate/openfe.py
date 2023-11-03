@@ -77,6 +77,38 @@ class IntrinsicRate(object):
         intrinsic_rates_nonzero = int_rates[intrinsic_rates_nonzero_ind]
         return intrinsic_rates_nonzero
 
+    def get_reg_intrinsics(self, measured_hx_rates, sd_slope=np.log(10**0.46)):
+    
+        # Filter observed rates to measurable range
+        valid_indices = (np.log(measured_hx_rates) < -4)
+        measured_hx_rates_measurable = measured_hx_rates[valid_indices]
+        
+        # Check if enough measurable rates were observed
+        if len(observed_rates_measurable) > 2:
+            # Calculate log values and medians
+            log_intrinsics = np.log(self.intrinsic_rates[self.intrinsic_rates != 0])
+            log_intrinsics_median = np.median(log_intrinsics)
+    
+            log_observed_rates = np.log(measured_hx_rates)
+            # Calculate median and std based only on measurable rates
+            measured_hx_rates_median = np.median(log_measured_hx_rates[valid_indices])
+            measured_hx_rates_std = np.std(log_observed_rates[valid_indices])
+    
+            # Normalize observed rates
+            norm_measured_hx_rates = (log_measured_hx_rates - measured_hx_rates_median) / measured_hx_rates_std
+    
+            # Perform regression calculation
+            reg_intrinsics = sd_slope * np.std(log_intrinsics) * norm_measured_hx_rates + log_intrinsics_median
+    
+            # Clip values to the range of log_intrinsics
+            reg_intrinsics = np.clip(reg_intrinsics, np.min(log_intrinsics), np.max(log_intrinsics))
+    
+            # Convert back to original scale
+            return np.sort(np.exp(reg_intrinsics))
+    
+        # If most observed rates are too fast, return median of intrinsics as the best approximation
+        return np.median(self.intrinsic_rates[self.intrinsic_rates != 0])
+
 
 @dataclass
 class DGOutput(object):
@@ -85,6 +117,7 @@ class DGOutput(object):
     """
     intrinsic_rates: np.ndarray = None
     intrinsic_rates_median: float = None
+    reg_intrinsic_rates: np.ndarray | float = None
     netcharge: float = None
     free_energy: np.ndarray = None
     sorted_free_energy: np.ndarray = None
@@ -260,7 +293,9 @@ def dg_calc(sequence: str,
     # use median to calculate dg values
     dgoutput.intrinsic_rates_median = intrinsic_rate.median()
 
-    dgoutput.free_energy = calc_free_energy_from_hx_rates(hx_instrinsic_rate=dgoutput.intrinsic_rates_median,
+    dgoutput.reg_intrinsic_rates = intrinsic_rate.get_reg_intrinsics(measured_hx_rates=np.exp(measured_hx_rates))
+
+    dgoutput.free_energy = calc_free_energy_from_hx_rates(hx_instrinsic_rate=dgoutput.reg_intrinsic_rates,
                                                           hx_meas_rate=np.exp(measured_hx_rates),
                                                           temperature=temp)
 
