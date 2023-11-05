@@ -85,7 +85,7 @@ class IntrinsicRate(object):
         measured_hx_rates_measurable = measured_hx_rates[valid_indices]
         
         # Check if enough measurable rates were observed
-        if len(observed_rates_measurable) > 2:
+        if len(measured_hx_rates_measurable) > 2:
             # Calculate log values and medians
             log_intrinsics = np.log(self.intrinsic_rates[self.intrinsic_rates != 0])
             log_intrinsics_median = np.median(log_intrinsics)
