@@ -93,7 +93,7 @@ class IntrinsicRate(object):
             log_measured_hx_rates = np.log(measured_hx_rates)
             # Calculate median and std based only on measurable rates
             measured_hx_rates_median = np.median(log_measured_hx_rates[valid_indices])
-            measured_hx_rates_std = np.std(log_observed_rates[valid_indices])
+            measured_hx_rates_std = np.std(log_measured_hx_rates[valid_indices])
     
             # Normalize observed rates
             norm_measured_hx_rates = (log_measured_hx_rates - measured_hx_rates_median) / measured_hx_rates_std
