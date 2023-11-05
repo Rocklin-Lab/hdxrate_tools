@@ -8,6 +8,7 @@ from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from hxrate.methods import calculate_intrinsic_exchange_rates
 from hxrate.hxdata import write_pickle_object
 import matplotlib.pyplot as plt
+from typing import Union
 
 
 @dataclass
@@ -117,7 +118,7 @@ class DGOutput(object):
     """
     intrinsic_rates: np.ndarray = None
     intrinsic_rates_median: float = None
-    reg_intrinsic_rates: np.ndarray | float = None
+    reg_intrinsic_rates: Union[np.ndarray, float] = None
     netcharge: float = None
     free_energy: np.ndarray = None
     sorted_free_energy: np.ndarray = None
