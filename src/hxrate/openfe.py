@@ -78,7 +78,7 @@ class IntrinsicRate(object):
         intrinsic_rates_nonzero = int_rates[intrinsic_rates_nonzero_ind]
         return intrinsic_rates_nonzero
 
-    def get_reg_intrinsics(self, measured_hx_rates, sd_slope=0.46):
+    def get_reg_intrinsics(self, measured_hx_rates, sd_slope=0.38):
     
         # Filter observed rates to measurable range
         valid_indices = (np.log(measured_hx_rates) < -4)
