@@ -30,7 +30,7 @@ class GaussFit(object):
     rmse: float
 
 
-def calculate_intrinsic_exchange_rates(sequence_str, Temperature, pH, nterm_mode='NT', cterm_mode='CT'):
+def calculate_intrinsic_exchange_rates(sequence_str, Temperature, pH, d2o_purity, d2o_fraction, nterm_mode='NT', cterm_mode='CT'):
     """
     calculates the intrinsic h exchange rates based on the amino acid sequence for a polypeptide chain
     # calculate the instrinsic exchange rate
@@ -78,7 +78,7 @@ def calculate_intrinsic_exchange_rates(sequence_str, Temperature, pH, nterm_mode
     HisTemperatureCorrection = math.exp(- TemperatureCorrection * HisActivationEnergy)
 
     # Corrected pH in D2O
-    # pH += 0.4
+    pH += 0.4 * d2o_purity * d2o_fraction
 
     # pK-values
     pKD = 15.05
@@ -135,8 +135,8 @@ def calculate_intrinsic_exchange_rates(sequence_str, Temperature, pH, nterm_mode
     MilneBase["E0"] = (-0.11, -0.15)  # added this item according to the JASMS paper
     MilneBase["E+"] = (0.24, 0.39)
     MilneBase["F"] = (-0.24, 0.06)
-    MilneBase["G"] = (0.27, 0.17)  # old value
-    # MilneBase["G"] = (-0.03, 0.17)  # changed this value according to the JASMS paper
+    # MilneBase["G"] = (0.27, 0.17)  # old value
+    MilneBase["G"] = (-0.03, 0.17)  # changed this value according to the JASMS paper
     MilneBase["H0"] = (-0.10, 0.14)  # added this item according to the JASMS paper
     MilneBase["H+"] = (0.80, 0.83)  # added this item according to the JASMS paper
     MilneBase["I"] = (-0.73, -0.23)
