@@ -270,7 +270,7 @@ def dg_calc(sequence: str,
             measured_hx_rates: np.ndarray,
             temp: float,
             ph: float,
-            d2o_purify : float,
+            d2o_purity : float,
             d2o_fraction : float,
             netcharge_corr: bool = True,
             min_fe_val: float = -2.0) -> object:
