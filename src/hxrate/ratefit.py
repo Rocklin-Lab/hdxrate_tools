@@ -1663,6 +1663,11 @@ def isotope_dist_from_PoiBin(theoretical_isotope_distribution,
 
     pmf_hx_probs = PoiBin(hx_probs)
 
+    # Gabe note May 25 2024: to model EX1, combine "pmf_hx_probs" with
+    # another distribution of fully exchanged proteins (accounting for
+    # global unfolding with slow refolding) before putting pmf_hx_probs
+    # into isotope_dist_poibin
+                                 
     isotope_dist_poibin = jnp.convolve(pmf_hx_probs, theoretical_isotope_distribution)[:num_bins]
     isotope_dist_poibin_norm = isotope_dist_poibin / jnp.max(isotope_dist_poibin)
 
