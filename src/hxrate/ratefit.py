@@ -446,6 +446,7 @@ class BayesRateFit(object):
                                                             d2o_purity=exp_data_object.d2o_purity,
                                                             num_bins=exp_data_object.num_bins_ms))
 
+        
         flat_thr_dist = np.concatenate(self.output['pred_distribution'])
         flat_thr_dist_non_zero = flat_thr_dist[exp_data_object.nonzero_exp_dist_indices]
 
@@ -1773,10 +1774,20 @@ def rate_fit_model_norm_priors(num_rates,
 
     sigma=numpyro.sample("sigma", dist.Exponential(1))
 
+    #allan fix this
+    thr_centroids = jnp.arange(len(timepoints)) * thr_dists / jnp.sum(thr_dists,axis=)
+    #exp_centroids =    
+    centroid_sigma = numpyro.sample("centroid_sigma", dist.Exponential(1))
+                                   
+
+    numpyro.sample("centroid_obs", fn=numpyro.distributions.Normal(loc=thr_centroids, scale=centroid_sigma), obs=exp_centroids)
+                                   
     with numpyro.plate(name='bins', size=len(flat_thr_dist_non_zero)):
         return numpyro.sample(name='bin_preds',
                               fn=numpyro.distributions.Normal(loc=flat_thr_dist_non_zero, scale=sigma),
                               obs=obs_dist_nonzero_flat)
+        
+
 
 
 @jax.jit
