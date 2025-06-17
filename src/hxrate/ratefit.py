@@ -314,7 +314,7 @@ class BayesRateFit(object):
                          num_bins=exp_data_object.num_bins_ms,
                          obs_dist_nonzero_flat=jnp.asarray(exp_data_object.flat_nonzero_exp_dist),
                          nonzero_indices=exp_data_object.nonzero_exp_dist_indices,
-                         obs_centroids=exp_data_object.obs_centroids,
+                         obs_centroids=exp_data_object.exp_centroids,
                          extra_fields=('potential_energy',))
 
             else:
@@ -328,7 +328,7 @@ class BayesRateFit(object):
                          num_bins=exp_data_object.num_bins_ms,
                          obs_dist_nonzero_flat=jnp.asarray(exp_data_object.flat_nonzero_exp_dist),
                          nonzero_indices=exp_data_object.nonzero_exp_dist_indices,
-                         obs_centroids=exp_data_object.obs_centroids,
+                         obs_centroids=exp_data_object.exp_centroids,
                          extra_fields=('potential_energy',))
 
             # get posterior samples by chain
@@ -1817,7 +1817,7 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
                                           d2o_purity,
                                           num_bins,
                                           obs_dist_nonzero_flat,
-                                          nonzero_indices
+                                          nonzero_indices,
                                           obs_centroids):
     """
     rate fit model for opt
