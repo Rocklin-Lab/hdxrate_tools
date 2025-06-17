@@ -127,6 +127,10 @@ class ExpDataRateFit(object):
             # stack exp distribution
             self.exp_distribution_stack = np.vstack(self.exp_distribution_list)
 
+        # 06/16/2025
+        indices = np.arange(self.exp_distribution.shape[1])
+        self.exp_centroids = (self.exp_distribution * indices).sum(axis=1) / self.exp_distribution.sum(axis=1)
+
         self.flat_nonzero_exp_dist, self.nonzero_exp_dist_indices = self.gen_flat_nonzero_exp_dist()
 
     def gen_num_exchange_rates(self):
@@ -310,6 +314,7 @@ class BayesRateFit(object):
                          num_bins=exp_data_object.num_bins_ms,
                          obs_dist_nonzero_flat=jnp.asarray(exp_data_object.flat_nonzero_exp_dist),
                          nonzero_indices=exp_data_object.nonzero_exp_dist_indices,
+                         obs_centroids=exp_data_object.obs_centroids,
                          extra_fields=('potential_energy',))
 
             else:
@@ -323,6 +328,7 @@ class BayesRateFit(object):
                          num_bins=exp_data_object.num_bins_ms,
                          obs_dist_nonzero_flat=jnp.asarray(exp_data_object.flat_nonzero_exp_dist),
                          nonzero_indices=exp_data_object.nonzero_exp_dist_indices,
+                         obs_centroids=exp_data_object.obs_centroids,
                          extra_fields=('potential_energy',))
 
             # get posterior samples by chain
@@ -1732,7 +1738,8 @@ def rate_fit_model_norm_priors(num_rates,
                                d2o_purity,
                                num_bins,
                                obs_dist_nonzero_flat,
-                               nonzero_indices):
+                               nonzero_indices,
+                               obs_centroids,):
     """
     rate fit model for opt
     :param num_rates: number of rates
@@ -1772,16 +1779,13 @@ def rate_fit_model_norm_priors(num_rates,
     # sigma = numpyro.sample(name='sigma',
     #                        fn=numpyro.distributions.Normal(loc=0.5, scale=0.5))
 
-    sigma=numpyro.sample("sigma", dist.Exponential(1))
-
     #allan fix this
-    thr_centroids = jnp.arange(len(timepoints)) * thr_dists / jnp.sum(thr_dists,axis=)
-    #exp_centroids =    
-    centroid_sigma = numpyro.sample("centroid_sigma", dist.Exponential(1))
-                                   
+    # Compute thr_centroids, sample distance between obs_centroids and thr_centroids
+    thr_centroids = jnp.arange(len(timepoints)) * thr_dists / jnp.sum(thr_dists,axis=1)  
+    centroid_sigma = numpyro.sample("centroid_sigma", dist.Exponential(1))                             
+    numpyro.sample("centroid_obs", fn=numpyro.distributions.Normal(loc=thr_centroids, scale=centroid_sigma), obs=obs_centroids)
 
-    numpyro.sample("centroid_obs", fn=numpyro.distributions.Normal(loc=thr_centroids, scale=centroid_sigma), obs=exp_centroids)
-                                   
+    sigma=numpyro.sample("sigma", dist.Exponential(1))
     with numpyro.plate(name='bins', size=len(flat_thr_dist_non_zero)):
         return numpyro.sample(name='bin_preds',
                               fn=numpyro.distributions.Normal(loc=flat_thr_dist_non_zero, scale=sigma),
@@ -1813,7 +1817,8 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
                                           d2o_purity,
                                           num_bins,
                                           obs_dist_nonzero_flat,
-                                          nonzero_indices):
+                                          nonzero_indices
+                                          obs_centroids):
     """
     rate fit model for opt
     :param num_rates: number of rates
@@ -1860,7 +1865,7 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
                                                                                                     backexchange_array),
                                                                 d2o_fraction=d2o_fraction,
                                                                 d2o_purity=d2o_purity,
-                                                                num_bins=num_bins)
+                                                                num_bins=num_bins,)
 
     flat_thr_dist = jnp.concatenate(thr_dists)
     flat_thr_dist_non_zero = flat_thr_dist[nonzero_indices]
@@ -1868,6 +1873,11 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
     # Edit 10/29/23
     # sigma = numpyro.sample(name='sigma',
     #                        fn=dist.Normal(loc=0.5, scale=0.5))
+
+    # Compute thr_centroids, sample distance between obs_centroids and thr_centroids
+    thr_centroids = jnp.arange(len(timepoints)) * thr_dists / jnp.sum(thr_dists,axis=1)  
+    centroid_sigma = numpyro.sample("centroid_sigma", dist.Exponential(1))                             
+    numpyro.sample("centroid_obs", fn=numpyro.distributions.Normal(loc=thr_centroids, scale=centroid_sigma), obs=obs_centroids)
     
     sigma=numpyro.sample("sigma", dist.Exponential(1))
 
