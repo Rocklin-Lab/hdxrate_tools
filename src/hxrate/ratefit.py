@@ -1781,7 +1781,8 @@ def rate_fit_model_norm_priors(num_rates,
 
     #allan fix this
     # Compute thr_centroids, sample distance between obs_centroids and thr_centroids
-    thr_centroids = jnp.arange(len(timepoints)) * thr_dists / jnp.sum(thr_dists,axis=1)  
+    indices = np.arange(self.exp_distribution.shape[1])
+    thr_centroids = (thr_dists * indices).sum(axis=1) / thr_dists.sum(axis=1)
     centroid_sigma = numpyro.sample("centroid_sigma", dist.Exponential(1))                             
     numpyro.sample("centroid_obs", fn=numpyro.distributions.Normal(loc=thr_centroids, scale=centroid_sigma), obs=obs_centroids)
 
@@ -1875,7 +1876,8 @@ def rate_fit_model_norm_priors_with_merge(num_rates,
     #                        fn=dist.Normal(loc=0.5, scale=0.5))
 
     # Compute thr_centroids, sample distance between obs_centroids and thr_centroids
-    thr_centroids = jnp.arange(len(timepoints)) * thr_dists / jnp.sum(thr_dists,axis=1)  
+    indices = np.arange(self.exp_distribution.shape[1])
+    thr_centroids = (thr_dists * indices).sum(axis=1) / thr_dists.sum(axis=1)
     centroid_sigma = numpyro.sample("centroid_sigma", dist.Exponential(1))                             
     numpyro.sample("centroid_obs", fn=numpyro.distributions.Normal(loc=thr_centroids, scale=centroid_sigma), obs=obs_centroids)
     
