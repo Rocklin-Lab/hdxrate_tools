@@ -95,6 +95,7 @@ class ExpDataRateFit(object):
                                                    tp_ind_label=timepoint_index_list,
                                                    exp_label=exp_label)
         self.exp_distribution = exp_distribution
+        self.exp_distribution_stack = np.vstack(self.exp_distribution)
         self.backexchange = backexchange
 
         self.num_rates = self.gen_num_exchange_rates()
@@ -128,8 +129,8 @@ class ExpDataRateFit(object):
             self.exp_distribution_stack = np.vstack(self.exp_distribution_list)
 
         # 06/16/2025
-        indices = np.arange(self.exp_distribution.shape[1])
-        self.exp_centroids = (self.exp_distribution * indices).sum(axis=1) / self.exp_distribution.sum(axis=1)
+        indices = np.arange(self.exp_distribution_stack.shape[1])
+        self.exp_centroids = (self.exp_distribution_stack * indices).sum(axis=1) / self.exp_distribution_stack.sum(axis=1)
 
         self.flat_nonzero_exp_dist, self.nonzero_exp_dist_indices = self.gen_flat_nonzero_exp_dist()
 
